@@ -1,0 +1,20 @@
+.atom {
+  position: relative;
+  display: inline-block;
+  flex: none;
+}
+
+.atom svg {
+  position: absolute;
+  inset: 0;
+}
+
+.symbol {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding-top: 2px;
+  font-size: calc(24px * var(--ts, 1));
+  line-height: 1;
+}

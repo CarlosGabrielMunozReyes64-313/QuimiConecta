@@ -1,0 +1,163 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.prompt {
+  margin: 0;
+  font-size: calc(24px * var(--ts, 1));
+  font-weight: normal;
+  line-height: calc(30px * var(--ts, 1));
+}
+
+.hint {
+  margin: 2px 0 0;
+  font-size: calc(16px * var(--ts, 1));
+  line-height: calc(20px * var(--ts, 1));
+  color: var(--ink-soft);
+}
+
+.stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.note {
+  position: absolute;
+  top: 44px;
+  z-index: 20;
+  width: 260px;
+  max-height: calc(100% - 52px);
+  overflow: hidden;
+  padding: 10px 14px 12px;
+  background: #ffe680;
+  color: var(--ink);
+  border: 4px solid var(--outline);
+  box-shadow:
+    inset 0 -4px 0 #e5c24c,
+    4px 4px 0 rgba(0, 20, 32, 0.3);
+  font-size: calc(16px * var(--ts, 1));
+  line-height: calc(20px * var(--ts, 1));
+  animation: px-pop 220ms steps(3);
+  pointer-events: none;
+}
+
+.right {
+  right: 0;
+}
+
+.left {
+  left: 0;
+}
+
+.portrait .note {
+  left: 0;
+  right: 0;
+  width: auto;
+  top: 44px;
+}
+
+.noteLegend {
+  margin-top: 6px !important;
+  font-size: calc(16px * var(--ts, 1));
+  color: var(--ink-soft);
+}
+
+.note ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.note li + li {
+  margin-top: 6px;
+}
+
+.note p {
+  margin: 0;
+}
+
+.noteTitle {
+  margin-bottom: 4px !important;
+  color: var(--red-deep);
+  font-size: calc(16px * var(--ts, 1));
+}
+
+.noteOk {
+  background: #bdf3d2;
+  box-shadow:
+    inset 0 -4px 0 #7fd7a3,
+    4px 4px 0 rgba(0, 20, 32, 0.3);
+}
+
+.noteOk .noteTitle {
+  color: var(--green-deep);
+}
+
+.solution {
+  position: absolute;
+  inset: 8px 24px;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 18px 18px;
+  background: var(--paper);
+  border: 4px solid var(--outline);
+  box-shadow:
+    inset 0 -4px 0 var(--paper-shade),
+    6px 6px 0 rgba(0, 20, 32, 0.35);
+  animation: px-pop 200ms steps(3);
+}
+
+.solutionTitle {
+  margin: 0;
+  font-size: calc(20px * var(--ts, 1));
+}
+
+.solutionText {
+  margin: 0;
+  max-width: 60ch;
+  text-align: center;
+  font-size: calc(16px * var(--ts, 1));
+  line-height: calc(22px * var(--ts, 1));
+}
+
+.footer {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 60px;
+  padding-top: 6px;
+}
+
+.status {
+  flex: 1;
+  margin: 0;
+  font-size: calc(16px * var(--ts, 1));
+  line-height: calc(20px * var(--ts, 1));
+  color: var(--ink-soft);
+}
+
+.ok {
+  color: var(--green-deep);
+}
+
+.bad {
+  color: var(--red-deep);
+}
+
+.portrait .footer {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.portrait .status {
+  flex-basis: 100%;
+}

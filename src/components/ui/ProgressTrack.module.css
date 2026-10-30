@@ -1,0 +1,43 @@
+.track {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cell {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 4px solid var(--outline);
+  font-size: calc(16px * var(--ts, 1));
+  line-height: 1;
+  color: #8b96a0;
+  background: #26323b;
+}
+
+.stageStart {
+  margin-left: 8px;
+}
+
+.correct {
+  background: var(--green);
+  color: var(--outline);
+}
+
+.wrong {
+  background: var(--red);
+  color: #fff;
+}
+
+.current {
+  background: var(--gold);
+  color: var(--outline);
+  animation: cell-pulse 900ms steps(2) infinite;
+}
+
+@keyframes cell-pulse {
+  50% {
+    background: #fff4c2;
+  }
+}

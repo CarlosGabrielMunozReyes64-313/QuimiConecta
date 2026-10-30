@@ -1,0 +1,32 @@
+.screen {
+  position: absolute;
+  inset: 0;
+}
+
+.slot {
+  position: absolute;
+}
+
+.slot > * {
+  position: absolute;
+  inset: 0;
+}
+
+.avatar {
+  position: absolute;
+  z-index: 3;
+}
+
+.wipe {
+  height: 100%;
+  animation: wipe 360ms steps(6) both;
+}
+
+@keyframes wipe {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}

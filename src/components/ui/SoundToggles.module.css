@@ -1,0 +1,28 @@
+.group {
+  display: flex;
+  gap: 8px;
+}
+
+.toggle {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 40px;
+  border: 4px solid var(--outline);
+  background: var(--teal-deep);
+  color: var(--teal-glow);
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.35);
+}
+
+.toggle[aria-pressed='false'] {
+  background: #39424a;
+  color: #9aa3ab;
+}
+
+.toggle:hover {
+  background: var(--teal);
+}
+
+.toggle:active {
+  box-shadow: inset 0 4px 0 rgba(0, 0, 0, 0.35);
+}

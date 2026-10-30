@@ -1,0 +1,156 @@
+/* La fuente pixel (Minecraft ampliada con tildes, ñ y ¿) se registra en src/styles/font.ts */
+
+:root {
+  /* Tinta de rotulador y contornos */
+  --ink: #1d2a5c;
+  --ink-soft: #4a5684;
+  --outline: #001420;
+
+  /* Madera y papel (marco de la pizarra) */
+  --wood: #f9d98c;
+  --wood-mid: #ecc677;
+  --wood-dark: #d7b15c;
+  --wood-deep: #8a6420;
+  --paper: #f7efd8;
+  --paper-shade: #e3d2a6;
+  --board: #f1f1ee;
+
+  /* Turquesa del icono Messenger */
+  --teal-deep: #024b56;
+  --teal: #037986;
+  --teal-bright: #12b5cc;
+  --teal-glow: #8ef1ff;
+
+  /* Resultados: el rojo es el del rotulador de la pizarra */
+  --red: #e8484a;
+  --red-deep: #8f1d22;
+  --green: #2fbf71;
+  --green-deep: #135f35;
+  --gold: #ffd23f;
+  --gold-deep: #a6780a;
+
+  /* Colores CPK de los átomos */
+  --atom-h: #f4f4f0;
+  --atom-c: #3b3f4c;
+  --atom-n: #3c5bd6;
+  --atom-o: #e8484a;
+
+  --panel: rgba(0, 20, 32, 0.86);
+  --font: 'Minecraft ES', 'Courier New', monospace;
+  --step: 4px;
+
+  color-scheme: light dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--outline);
+  color: var(--white, #fff);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.5;
+  overflow: hidden;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+  font-smooth: never;
+  text-rendering: optimizeSpeed;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+img,
+svg {
+  display: block;
+}
+
+.pixelated {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 4px solid var(--gold);
+  outline-offset: 2px;
+}
+
+sub {
+  font-size: 0.75em;
+  line-height: 0;
+  vertical-align: -0.3em;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Panel pixel: borde duro de 4 px con esquinas escalonadas */
+.px-panel {
+  background: var(--panel);
+  border: 4px solid var(--outline);
+  box-shadow:
+    inset 0 4px 0 rgba(142, 241, 255, 0.18),
+    inset 0 -4px 0 rgba(0, 0, 0, 0.35);
+  clip-path: polygon(
+    0 4px, 4px 4px, 4px 0, calc(100% - 4px) 0, calc(100% - 4px) 4px, 100% 4px,
+    100% calc(100% - 4px), calc(100% - 4px) calc(100% - 4px), calc(100% - 4px) 100%,
+    4px 100%, 4px calc(100% - 4px), 0 calc(100% - 4px)
+  );
+}
+
+@keyframes px-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes px-pop {
+  0% {
+    transform: scale(0.6);
+  }
+  60% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

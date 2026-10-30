@@ -1,0 +1,85 @@
+.bubble {
+  position: absolute;
+  z-index: 5;
+  padding: 22px 24px 14px;
+  background: #fff;
+  color: var(--ink);
+  border: 4px solid var(--outline);
+  box-shadow:
+    inset 0 -4px 0 #d6dde6,
+    0 4px 0 rgba(0, 20, 32, 0.45);
+  cursor: default;
+}
+
+.bubble::before,
+.bubble::after {
+  content: '';
+  position: absolute;
+}
+
+/* Cola escalonada hacia la derecha: contorno y relleno */
+.tailRight::before {
+  right: -28px;
+  top: 28px;
+  width: 28px;
+  height: 32px;
+  background: var(--outline);
+  clip-path: polygon(0 0, 8px 0, 8px 4px, 16px 4px, 16px 8px, 24px 8px, 24px 12px, 28px 12px, 28px 20px, 20px 20px, 20px 24px, 12px 24px, 12px 28px, 4px 28px, 4px 32px, 0 32px);
+}
+
+.tailRight::after {
+  right: -20px;
+  top: 36px;
+  width: 20px;
+  height: 16px;
+  background: #fff;
+  clip-path: polygon(0 0, 4px 0, 4px 4px, 12px 4px, 12px 8px, 16px 8px, 16px 8px, 12px 8px, 12px 12px, 4px 12px, 4px 16px, 0 16px);
+}
+
+/* Cola escalonada hacia abajo (formato vertical) */
+.tailDown::before {
+  right: 72px;
+  bottom: -28px;
+  width: 32px;
+  height: 28px;
+  background: var(--outline);
+  clip-path: polygon(0 0, 32px 0, 32px 8px, 28px 8px, 28px 16px, 24px 16px, 24px 24px, 20px 24px, 20px 28px, 12px 28px, 12px 20px, 8px 20px, 8px 12px, 4px 12px, 4px 4px, 0 4px);
+}
+
+.tailDown::after {
+  right: 80px;
+  bottom: -16px;
+  width: 16px;
+  height: 16px;
+  background: #fff;
+  clip-path: polygon(0 0, 16px 0, 16px 4px, 12px 4px, 12px 12px, 8px 12px, 8px 16px, 8px 16px, 4px 12px, 4px 4px, 0 4px);
+}
+
+.name {
+  position: absolute;
+  left: 16px;
+  top: -14px;
+  padding: 0 10px;
+  background: var(--teal);
+  color: #fff;
+  border: 4px solid var(--outline);
+  font-size: calc(16px * var(--ts, 1));
+  line-height: calc(20px * var(--ts, 1));
+}
+
+.text {
+  margin: 0;
+  font-size: calc(16px * var(--ts, 1));
+  line-height: calc(24px * var(--ts, 1));
+  max-height: calc(72px * var(--ts, 1));
+  overflow: hidden;
+}
+
+.ghost {
+  visibility: hidden;
+}
+
+.scientist {
+  position: absolute;
+  z-index: 4;
+}

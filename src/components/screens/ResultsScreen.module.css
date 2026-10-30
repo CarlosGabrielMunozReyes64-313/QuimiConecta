@@ -1,0 +1,198 @@
+.screen {
+  position: absolute;
+  inset: 0;
+}
+
+.slot {
+  position: absolute;
+}
+
+.slot > * {
+  position: absolute;
+  inset: 0;
+}
+
+.hud {
+  position: absolute;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 16px;
+}
+
+.logo {
+  margin: 0;
+  font-size: calc(24px * var(--ts, 1));
+  color: var(--teal-glow);
+  text-shadow: 3px 3px 0 var(--outline);
+}
+
+.hudText {
+  margin: 0;
+  color: var(--gold);
+}
+
+.avatar {
+  position: absolute;
+  z-index: 3;
+}
+
+.content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.portrait .top {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.stamp {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 172px;
+  height: 172px;
+  border: 8px solid var(--outline);
+  background: #39424a;
+  color: #fff;
+  box-shadow:
+    inset 0 -8px 0 rgba(0, 0, 0, 0.3),
+    inset 0 8px 0 rgba(255, 255, 255, 0.25),
+    6px 6px 0 rgba(0, 20, 32, 0.35);
+  animation: stamp 700ms steps(7) 400ms both;
+}
+
+.stampLetter {
+  font-size: 96px;
+  line-height: 1;
+  text-shadow: 6px 6px 0 rgba(0, 20, 32, 0.45);
+}
+
+.stampLabel {
+  font-size: calc(16px * var(--ts, 1));
+}
+
+.gS,
+.gA {
+  background: var(--gold);
+  color: var(--outline);
+}
+
+.gB,
+.gC {
+  background: var(--green);
+  color: var(--outline);
+}
+
+.gD {
+  background: var(--teal-bright);
+  color: var(--outline);
+}
+
+.gE,
+.gF {
+  background: var(--red);
+}
+
+@keyframes stamp {
+  0% {
+    transform: scale(2.4) rotate(-12deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(0.92) rotate(2deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+.summary {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: calc(24px * var(--ts, 1));
+  font-weight: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.score {
+  margin: 4px 0 8px;
+  font-size: calc(24px * var(--ts, 1));
+}
+
+.score span {
+  font-size: 48px;
+  color: var(--teal);
+}
+
+.stats {
+  display: flex;
+  gap: 24px;
+  margin: 0;
+}
+
+.stats dt {
+  font-size: calc(16px * var(--ts, 1));
+  color: var(--ink-soft);
+}
+
+.stats dd {
+  margin: 0;
+  font-size: 32px;
+}
+
+.ok {
+  color: var(--green-deep);
+}
+
+.bad {
+  color: var(--red-deep);
+}
+
+.message {
+  margin: 0;
+  padding: 10px 14px;
+  border-left: 8px solid var(--teal-bright);
+  background: rgba(255, 255, 255, 0.75);
+  font-size: calc(20px * var(--ts, 1));
+  line-height: calc(28px * var(--ts, 1));
+}
+
+.track {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.trackLabel {
+  font-size: calc(16px * var(--ts, 1));
+  color: var(--ink-soft);
+}
+
+.actions {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+}
