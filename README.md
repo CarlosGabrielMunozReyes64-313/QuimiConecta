@@ -10,12 +10,29 @@ Son nueve preguntas en tres etapas, cada una de un punto:
 
 La calificación va de S (9 puntos) a F (0–1) según la tabla del enunciado.
 
+## Tiempo límite
+
+Cada pregunta tiene su propio tiempo, definido en `timeLimit` dentro de `bank.ts`:
+
+| Etapa | Tiempo (modo Normal) |
+|---|---|
+| 1. Reglas básicas | 30 s, 30 s y 40 s |
+| 2. Construcción molecular | 2 min, 2 min y 2 min 30 s |
+| 3. Fórmulas químicas | 40 s cada una |
+
+- **Si se agota en opción múltiple**, cuenta como fallo y se muestra la respuesta correcta.
+- **Si se agota en construcción**, se revisa lo que el estudiante haya montado y puede ganar el punto si estaba bien.
+- **Avisos:** el científico avisa a los 10 s y suenan tics en los últimos 5. La barra pasa de turquesa a dorado y luego a rojo.
+- **Pausa:** el reloj se detiene mientras el menú de salir está abierto o la pestaña está oculta.
+- **Modo de tiempo** (en el registro, según WCAG 2.2.1): Normal, Amplio (el doble) o Sin límite.
+- **Resultados:** se indica cuántas preguntas se perdieron por tiempo.
+
 ## Uso
 
 ```bash
 npm install
 npm run dev          # http://localhost:5173 (la cámara exige localhost o HTTPS)
-npm test             # 37 pruebas con Vitest
+npm test             # 42 pruebas con Vitest
 npm run typecheck    # TypeScript estricto
 npm run lint         # Oxlint
 npm run build        # build de producción en dist/
@@ -31,6 +48,7 @@ src/
     molecular/          moléculas, dibujo de Lewis y validador químico
     physics/            MoleculeWorld: integración con Matter.js
     grading.ts          escala S–F y calificación provisional
+    timing.ts           modos de tiempo y formatos del reloj
     session.ts          reductor de la partida (sin puntos duplicados)
     dialogue.ts         frases del científico
     layout.ts           composición del escenario (horizontal y vertical)

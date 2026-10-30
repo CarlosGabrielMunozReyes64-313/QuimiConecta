@@ -51,6 +51,23 @@ describe('mundo físico (Matter.js)', () => {
     world.destroy()
   })
 
+  it('une dos átomos separados si el enlace se suelta en la línea entre ellos', () => {
+    const world = new MoleculeWorld({ width: 736, height: 300, pieces: build('q4').pieces, reducedMotion: true })
+    const [o, h1, h2] = world.atoms()
+    world.nudge(o.id, 250 - o.body.position.x, 120 - o.body.position.y)
+    world.nudge(h1.id, 420 - h1.body.position.x, 120 - h1.body.position.y)
+    world.nudge(h2.id, 600 - h2.body.position.x, 60 - h2.body.position.y)
+    const bond = world.bonds().find((b) => b.order === 1)
+    if (!bond) throw new Error('sin enlace sencillo')
+    world.grab(bond.id, bond.body.position)
+    world.moveGrab({ x: 335, y: 128 })
+    run(world, 90)
+    expect(world.bondTargets(bond)).toEqual([o.id, h1.id])
+    world.release(true)
+    expect(world.graph().bonds).toEqual([expect.objectContaining({ a: o.id, b: h1.id, order: 1 })])
+    world.destroy()
+  })
+
   it('construye H₂O completo y la validación lo acepta', () => {
     const world = new MoleculeWorld({ width: 736, height: 300, pieces: build('q4').pieces, reducedMotion: true })
     const o = world.atoms().find((a) => a.element === 'O')

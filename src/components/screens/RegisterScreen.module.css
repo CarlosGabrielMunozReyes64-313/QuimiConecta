@@ -60,8 +60,8 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding-top: 12px;
+  gap: 6px;
+  padding-top: 4px;
 }
 
 .label {
@@ -116,7 +116,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  margin: 6px 0;
+  margin: 2px 0;
   cursor: pointer;
   font-size: calc(16px * var(--ts, 1));
 }
@@ -140,6 +140,58 @@
 }
 
 .check input:focus-visible + .box {
+  outline: 4px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.modes {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.modesLegend {
+  padding: 0;
+  margin-bottom: 4px;
+  font-size: calc(16px * var(--ts, 1));
+}
+
+.modeRow {
+  display: flex;
+  gap: 8px;
+}
+
+.mode {
+  position: relative;
+  flex: 1;
+  display: grid;
+  place-items: center;
+  min-height: 40px;
+  padding: 4px 8px;
+  border: 4px solid var(--outline);
+  background: #fff;
+  color: var(--ink);
+  font-size: calc(16px * var(--ts, 1));
+  cursor: pointer;
+  box-shadow: inset 0 -4px 0 #d7dde5;
+}
+
+.mode input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.modeOn {
+  background: var(--teal);
+  color: #fff;
+  box-shadow: inset 0 -4px 0 var(--teal-deep);
+}
+
+.mode:has(input:focus-visible) {
   outline: 4px solid var(--gold);
   outline-offset: 2px;
 }

@@ -15,6 +15,8 @@ interface QuestionBase {
   id: string
   stage: StageNumber
   prompt: string
+  /** Tiempo límite en segundos (modo Normal). */
+  timeLimit: number
   /** Explicación breve que se muestra tras responder. */
   explanation: string
 }
@@ -87,13 +89,19 @@ export interface Player {
   /** Foto reducida a la rejilla de bloques del sprite Messenger. */
   photoPixel: string | null
   pixelStyle: boolean
+  timeMode: TimeMode
 }
+
+/** Normal, Amplio (el doble) o Sin límite (sin cuenta atrás). */
+export type TimeMode = 'normal' | 'amplio' | 'libre'
 
 export interface AnswerRecord {
   questionId: string
   correct: boolean
   /** Opción elegida (preguntas de selección). */
   choiceId?: string
+  /** true si la respuesta se registró al agotarse el tiempo. */
+  timedOut?: boolean
   answeredAt: number
 }
 

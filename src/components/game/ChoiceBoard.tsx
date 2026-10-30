@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { MOLECULES } from '../../game/molecular/molecules'
+import { useQuestionClock } from '../../hooks/useQuestionClock'
 import type { Orientation } from '../../game/layout'
 import type { AnswerRecord, ChoiceQuestion, FormulaQuestion } from '../../types/game'
 import { ScrollBanner } from '../board/ScrollBanner'
@@ -8,6 +9,7 @@ import { plainChem } from '../../game/chemText'
 import { ChemText } from '../ui/ChemText'
 import { PixelButton } from '../ui/PixelButton'
 import { PixelIcon } from '../ui/PixelIcon'
+import { QuestionTimer } from './QuestionTimer'
 import styles from './ChoiceBoard.module.css'
 
 interface Props {
@@ -15,26 +17,38 @@ interface Props {
   answer: AnswerRecord | undefined
   orientation: Orientation
   isLast: boolean
-  onAnswer: (choiceId: string, correct: boolean) => void
+  /** Límite de tiempo en ms (null = sin límite). */
+  limitMs: number | null
+  /** Pausa la cuenta atrás (menú abierto o pestaña oculta). */
+  paused: boolean
+  onAnswer: (choiceId: string | null, correct: boolean, timedOut: boolean) => void
   onNext: () => void
+  onHurry: () => void
 }
 
 const LETTERS = ['A', 'B', 'C', 'D']
 
 /** Pregunta de selección múltiple (etapa 1) o de identificación de fórmula (etapa 3). */
-export function ChoiceBoard({ question, answer, orientation, isLast, onAnswer, onNext }: Props) {
+export function ChoiceBoard({ question, answer, orientation, isLast, limitMs, paused, onAnswer, onNext, onHurry }: Props) {
   const nextRef = useRef<HTMLButtonElement>(null)
   const answered = Boolean(answer)
   const isFormula = question.kind === 'formula'
 
+  const remaining = useQuestionClock({
+    limitMs,
+    running: !answered && !paused,
+    onExpire: () => onAnswer(null, false, true),
+    onWarn: onHurry,
+  })
+
   const choose = (id: string) => {
     if (answered) return
-    onAnswer(id, id === question.correctOptionId)
+    onAnswer(id, id === question.correctOptionId, false)
   }
 
   // Atajos: 1-4 o A-D eligen una opción.
   useEffect(() => {
-    if (answered) return
+    if (answered || paused) return
     const onKey = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.metaKey || e.ctrlKey || e.altKey) return
       const k = e.key.toUpperCase()
@@ -42,12 +56,12 @@ export function ChoiceBoard({ question, answer, orientation, isLast, onAnswer, o
       const opt = question.options[idx]
       if (opt) {
         e.preventDefault()
-        onAnswer(opt.id, opt.id === question.correctOptionId)
+        onAnswer(opt.id, opt.id === question.correctOptionId, false)
       }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [answered, question, onAnswer])
+  }, [answered, paused, question, onAnswer])
 
   useEffect(() => {
     if (answered) nextRef.current?.focus({ preventScroll: true })
@@ -63,6 +77,10 @@ export function ChoiceBoard({ question, answer, orientation, isLast, onAnswer, o
           <ChemText text={question.prompt} />
         </h2>
       </ScrollBanner>
+
+      {limitMs !== null && remaining !== null ? (
+        <QuestionTimer remaining={remaining} total={limitMs} stopped={answered} paused={paused} timedOut={Boolean(answer?.timedOut)} />
+      ) : null}
 
       <div className={styles.body}>
         {figure ? (
@@ -113,7 +131,8 @@ export function ChoiceBoard({ question, answer, orientation, isLast, onAnswer, o
       <footer className={styles.footer}>
         {answered ? (
           <div className={`${styles.verdict} ${answer?.correct ? styles.verdictOk : styles.verdictBad}`} role="status">
-            <strong>{answer?.correct ? '¡Correcto! +1 punto.' : 'Incorrecto.'}</strong> <ChemText text={question.explanation} />
+            <strong>{answer?.correct ? '¡Correcto! +1 punto.' : answer?.timedOut ? '¡Se acabó el tiempo!' : 'Incorrecto.'}</strong>{' '}
+            <ChemText text={question.explanation} />
           </div>
         ) : (
           <p className={styles.tip}>Elige una opción. También puedes pulsar 1, 2, 3 o 4.</p>

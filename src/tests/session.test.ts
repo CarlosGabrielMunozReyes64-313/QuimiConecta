@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+nimport { describe, expect, it } from 'vitest'
 import { scoreOf } from '../game/grading'
 import { QUESTIONS } from '../game/questions/bank'
 import { createSession, sessionReducer } from '../game/session'

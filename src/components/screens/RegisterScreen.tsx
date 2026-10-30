@@ -1,9 +1,10 @@
 import { useId, useRef, useState } from 'react'
 import { sound } from '../../audio/sound'
 import { loadImageFile, processPhoto, type ProcessedPhoto } from '../../game/photo'
+import { TIME_MODES } from '../../game/timing'
 import { useCamera } from '../../hooks/useCamera'
 import type { StageFit } from '../../hooks/useStageLayout'
-import type { Player } from '../../types/game'
+import type { Player, TimeMode } from '../../types/game'
 import { StudentAvatar } from '../characters/StudentAvatar'
 import { Whiteboard } from '../board/Whiteboard'
 import { PixelButton } from '../ui/PixelButton'
@@ -31,6 +32,7 @@ export function RegisterScreen({ fit, initial, onBack, onDone }: Props) {
   )
   const [confirmed, setConfirmed] = useState(Boolean(initial?.photo))
   const [pixelStyle, setPixelStyle] = useState(initial?.pixelStyle ?? true)
+  const [timeMode, setTimeMode] = useState<TimeMode>(initial?.timeMode ?? 'normal')
   const [error, setError] = useState<string | null>(null)
   const [touched, setTouched] = useState(false)
 
@@ -84,6 +86,7 @@ export function RegisterScreen({ fit, initial, onBack, onDone }: Props) {
       photo: draft?.photo ?? null,
       photoPixel: draft?.photoPixel ?? null,
       pixelStyle,
+      timeMode,
     })
   }
 
@@ -206,7 +209,20 @@ export function RegisterScreen({ fit, initial, onBack, onDone }: Props) {
               Foto con estilo pixel art
             </label>
 
-            <p className={styles.privacy}>La foto solo se guarda en la memoria de este dispositivo mientras dura la partida. Si no quieres foto, puedes jugar sin ella.</p>
+            <fieldset className={styles.modes}>
+              <legend className={styles.modesLegend}>Tiempo por pregunta</legend>
+              <div className={styles.modeRow}>
+                {(Object.keys(TIME_MODES) as TimeMode[]).map((mode) => (
+                  <label key={mode} className={`${styles.mode} ${timeMode === mode ? styles.modeOn : ''}`}>
+                    <input type="radio" name="time-mode" value={mode} checked={timeMode === mode} onChange={() => setTimeMode(mode)} />
+                    {TIME_MODES[mode].label}
+                  </label>
+                ))}
+              </div>
+              <p className={styles.help}>{TIME_MODES[timeMode].description}</p>
+            </fieldset>
+
+            <p className={styles.privacy}>La foto solo se guarda en este dispositivo durante la partida. Puedes jugar sin foto.</p>
 
             <div className={styles.formActions}>
               <PixelButton variant="wood" onClick={onBack} icon={<PixelIcon name="back" cell={3} />}>

@@ -3,6 +3,8 @@ import { sound } from '../../audio/sound'
 import { lineFor, type DialogueEvent, type DialogueLine } from '../../game/dialogue'
 import { rectStyle } from '../../game/layout'
 import { QUESTIONS } from '../../game/questions/bank'
+import { limitMs } from '../../game/timing'
+import { usePageVisible } from '../../hooks/usePageVisible'
 import { createSession, sessionReducer, toResult } from '../../game/session'
 import { useNow } from '../../hooks/useNow'
 import type { StageFit } from '../../hooks/useStageLayout'
@@ -10,7 +12,7 @@ import type { GameResult, Player } from '../../types/game'
 import { Host } from '../characters/Host'
 import { StudentAvatar } from '../characters/StudentAvatar'
 import { Whiteboard } from '../board/Whiteboard'
-import { BuildBoard } from '../game/BuildBoard'
+import { BuildBoard, type BuildHostEvent } from '../game/BuildBoard'
 import { ChoiceBoard } from '../game/ChoiceBoard'
 import { Hud } from '../game/Hud'
 import { PlayerCard } from '../game/PlayerCard'
@@ -36,11 +38,14 @@ export function GameScreen({ fit, player, onFinish, onQuit }: Props) {
   const [confirmQuit, setConfirmQuit] = useState(false)
   const now = useNow(state.finishedAt === null)
   const lastIndex = useRef(0)
+  const visible = usePageVisible()
+  const paused = confirmQuit || !visible
 
   const question = QUESTIONS[state.index]
   const answer = state.answers.find((a) => a.questionId === question.id)
   const isLast = state.index === QUESTIONS.length - 1
   const elapsed = (state.finishedAt ?? now) - state.startedAt
+  const limit = limitMs(question, player.timeMode)
 
   const say = useCallback((event: DialogueEvent) => setLine(lineFor(event, player.name)), [player.name])
 
@@ -62,13 +67,16 @@ export function GameScreen({ fit, player, onFinish, onQuit }: Props) {
     return () => window.clearTimeout(id)
   }, [player.name])
 
-  const registerAnswer = (correct: boolean, choiceId?: string) => {
+  const registerAnswer = (correct: boolean, timedOut: boolean, choiceId?: string) => {
     if (answer) return
     const t = Date.now()
-    dispatch({ type: 'answer', questionId: question.id, correct, choiceId, now: t })
+    dispatch({ type: 'answer', questionId: question.id, correct, choiceId: choiceId ?? undefined, timedOut, now: t })
     const prevAnswers = state.answers
     const streak = correct && prevAnswers.length >= 2 && prevAnswers.slice(-2).every((a) => a.correct)
-    if (correct) {
+    if (timedOut && !correct) {
+      sound.play('timeout')
+      say(question.kind === 'build' ? 'buildTimeout' : 'timeout')
+    } else if (correct) {
       sound.play(question.kind === 'build' ? 'point' : 'correct')
       window.setTimeout(() => sound.play('point'), 260)
       if (streak) say('streak')
@@ -89,10 +97,8 @@ export function GameScreen({ fit, player, onFinish, onQuit }: Props) {
     dispatch({ type: 'next', now: Date.now() })
   }
 
-  const hostEvent = useCallback(
-    (event: 'practiceSolved' | 'practiceStillWrong' | 'solution' | 'idleHint' | 'bondMade') => say(event),
-    [say],
-  )
+  const hostEvent = useCallback((event: BuildHostEvent) => say(event), [say])
+  const hurry = useCallback(() => say('hurry'), [say])
 
   return (
     <main className={styles.screen}>
@@ -123,7 +129,9 @@ export function GameScreen({ fit, player, onFinish, onQuit }: Props) {
               answer={answer}
               orientation={orientation}
               isLast={isLast}
-              onAnswer={(correct) => registerAnswer(correct)}
+              limitMs={limit}
+              paused={paused}
+              onAnswer={(correct, timedOut) => registerAnswer(correct, timedOut)}
               onNext={next}
               onHost={hostEvent}
             />
@@ -133,8 +141,11 @@ export function GameScreen({ fit, player, onFinish, onQuit }: Props) {
               answer={answer}
               orientation={orientation}
               isLast={isLast}
-              onAnswer={(choiceId, correct) => registerAnswer(correct, choiceId)}
+              limitMs={limit}
+              paused={paused}
+              onAnswer={(choiceId, correct, timedOut) => registerAnswer(correct, timedOut, choiceId ?? undefined)}
               onNext={next}
+              onHurry={hurry}
             />
           )}
         </div>

@@ -6,11 +6,13 @@ import type { Question, StageNumber } from '../../types/game'
  * El orden del arreglo es el orden de juego. Para cambiar una pregunta basta con
  * editar este archivo: los componentes leen todo desde aquí.
  * Los subíndices se escriben con caracteres Unicode (₂ ₃ ₄); la interfaz los convierte.
+ * `timeLimit` es el tiempo en segundos del modo Normal (Amplio lo duplica).
  */
 export const QUESTIONS: Question[] = [
   // ---------------------------------------------------------------- Etapa 1
   {
     id: 'q1',
+    timeLimit: 30,
     stage: 1,
     kind: 'choice',
     prompt: 'Según la regla del octeto, ¿cuántos electrones buscan reunir los átomos en su capa de valencia al formar enlaces?',
@@ -25,6 +27,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     id: 'q2',
+    timeLimit: 30,
     stage: 1,
     kind: 'choice',
     prompt: '¿Qué átomo se estabiliza con solo 2 electrones, siguiendo la regla del dueto?',
@@ -39,6 +42,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     id: 'q3',
+    timeLimit: 40,
     stage: 1,
     kind: 'choice',
     prompt: 'El oxígeno está en el grupo 16. En su estructura de Lewis, ¿cuántos electrones de valencia (puntos) se dibujan alrededor del símbolo O?',
@@ -55,6 +59,7 @@ export const QUESTIONS: Question[] = [
   // ---------------------------------------------------------------- Etapa 2
   {
     id: 'q4',
+    timeLimit: 120,
     stage: 2,
     kind: 'build',
     moleculeId: 'H2O',
@@ -66,6 +71,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     id: 'q5',
+    timeLimit: 120,
     stage: 2,
     kind: 'build',
     moleculeId: 'CO2',
@@ -77,6 +83,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     id: 'q6',
+    timeLimit: 150,
     stage: 2,
     kind: 'build',
     moleculeId: 'NH3',
@@ -90,6 +97,7 @@ export const QUESTIONS: Question[] = [
   // ---------------------------------------------------------------- Etapa 3
   {
     id: 'q7',
+    timeLimit: 40,
     stage: 3,
     kind: 'formula',
     moleculeId: 'CH4',
@@ -105,6 +113,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     id: 'q8',
+    timeLimit: 40,
     stage: 3,
     kind: 'formula',
     moleculeId: 'CH2O',
@@ -120,6 +129,7 @@ export const QUESTIONS: Question[] = [
   },
   {
     id: 'q9',
+    timeLimit: 40,
     stage: 3,
     kind: 'formula',
     moleculeId: 'N2',

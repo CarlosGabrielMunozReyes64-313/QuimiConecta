@@ -52,6 +52,15 @@
   max-width: 52ch;
 }
 
+.time {
+  color: var(--teal);
+  font-size: calc(16px * var(--ts, 1));
+}
+
+.grades caption {
+  max-width: 300px;
+}
+
 .num {
   flex: none;
   display: grid;

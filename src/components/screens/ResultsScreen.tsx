@@ -29,6 +29,7 @@ export function ResultsScreen({ fit, player, result, onReplay, onChangePlayer, o
   const { layout, orientation } = fit
   const grade = gradeFor(result.score)
   const wrong = result.total - result.score
+  const timeouts = result.answers.filter((a) => a.timedOut && !a.correct).length
   const elapsed = result.finishedAt - result.startedAt
   const [line, setLine] = useState<DialogueLine>(() => lineFor('finish', player.name))
 
@@ -72,7 +73,10 @@ export function ResultsScreen({ fit, player, result, onReplay, onChangePlayer, o
                 </div>
                 <div>
                   <dt>Incorrectas</dt>
-                  <dd className={styles.bad}>{wrong}</dd>
+                  <dd className={styles.bad}>
+                    {wrong}
+                    {timeouts > 0 ? <small className={styles.timeouts}> ({timeouts} sin tiempo)</small> : null}
+                  </dd>
                 </div>
                 <div>
                   <dt>Tiempo total</dt>

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { sound } from '../../audio/sound'
 import { MOLECULES } from '../../game/molecular/molecules'
 import { validateStructure, type ValidationResult } from '../../game/molecular/validate'
+import { useQuestionClock } from '../../hooks/useQuestionClock'
 import type { MoleculeWorld, WorldEvent } from '../../game/physics/MoleculeWorld'
 import { BUILD_ZOOM, type Orientation } from '../../game/layout'
 import type { AnswerRecord, BuildQuestion } from '../../types/game'
@@ -11,6 +12,7 @@ import { ChemText } from '../ui/ChemText'
 import { PixelButton } from '../ui/PixelButton'
 import { PixelIcon } from '../ui/PixelIcon'
 import { MoleculeBuilder } from './MoleculeBuilder'
+import { QuestionTimer } from './QuestionTimer'
 import styles from './BuildBoard.module.css'
 
 interface Props {
@@ -18,18 +20,24 @@ interface Props {
   answer: AnswerRecord | undefined
   orientation: Orientation
   isLast: boolean
-  onAnswer: (correct: boolean) => void
+  /** Límite de tiempo en ms (null = sin límite). */
+  limitMs: number | null
+  /** Pausa la cuenta atrás (menú abierto o pestaña oculta). */
+  paused: boolean
+  onAnswer: (correct: boolean, timedOut: boolean) => void
   onNext: () => void
   /** Comentarios del presentador durante la construcción. */
-  onHost: (event: 'practiceSolved' | 'practiceStillWrong' | 'solution' | 'idleHint' | 'bondMade') => void
+  onHost: (event: BuildHostEvent) => void
 }
+
+export type BuildHostEvent = 'practiceSolved' | 'practiceStillWrong' | 'solution' | 'idleHint' | 'bondMade' | 'hurry'
 
 type Phase = 'build' | 'result' | 'practice'
 
 const IDLE_MS = 25000
 
 /** Pregunta de construcción molecular con Matter.js (etapa 2). */
-export function BuildBoard({ question, answer, orientation, isLast, onAnswer, onNext, onHost }: Props) {
+export function BuildBoard({ question, answer, orientation, isLast, limitMs, paused, onAnswer, onNext, onHost }: Props) {
   const worldRef = useRef<MoleculeWorld | null>(null)
   const nextRef = useRef<HTMLButtonElement>(null)
   const [phase, setPhase] = useState<Phase>(answer ? 'result' : 'build')
@@ -82,14 +90,25 @@ export function BuildBoard({ question, answer, orientation, isLast, onAnswer, on
     return validateStructure(spec, world.graph(), { requireLonePairs: question.requireLonePairs })
   }
 
-  const confirm = () => {
+  /** Registra la estructura. Al agotarse el tiempo se revisa lo que haya construido. */
+  const confirm = (timedOut = false) => {
     const result = evaluate()
-    if (!result) return
-    setMarks(result)
     setPhase('result')
+    if (!result) {
+      onAnswer(false, timedOut)
+      return
+    }
+    setMarks(result)
     if (result.correct) sound.play('complete')
-    onAnswer(result.correct)
+    onAnswer(result.correct, timedOut)
   }
+
+  const remaining = useQuestionClock({
+    limitMs,
+    running: phase === 'build' && !paused,
+    onExpire: () => confirm(true),
+    onWarn: () => onHost('hurry'),
+  })
 
   const practiceCheck = () => {
     const result = evaluate()
@@ -130,6 +149,10 @@ export function BuildBoard({ question, answer, orientation, isLast, onAnswer, on
         </h2>
         <p className={styles.hint}>{question.hint}</p>
       </ScrollBanner>
+
+      {limitMs !== null && remaining !== null ? (
+        <QuestionTimer remaining={remaining} total={limitMs} stopped={phase !== 'build'} paused={paused} timedOut={Boolean(answer?.timedOut)} />
+      ) : null}
 
       <div className={styles.stage}>
         <MoleculeBuilder
@@ -188,7 +211,7 @@ export function BuildBoard({ question, answer, orientation, isLast, onAnswer, on
             <PixelButton variant="wood" size="sm" onClick={reset}>
               Reiniciar piezas
             </PixelButton>
-            <PixelButton onClick={confirm} disabled={bonds === 0} icon={<PixelIcon name="check" cell={3} />}>
+            <PixelButton onClick={() => confirm()} disabled={bonds === 0} icon={<PixelIcon name="check" cell={3} />}>
               Confirmar estructura
             </PixelButton>
           </>
@@ -197,7 +220,8 @@ export function BuildBoard({ question, answer, orientation, isLast, onAnswer, on
         {phase === 'result' ? (
           <>
             <p className={`${styles.status} ${correctFinal ? styles.ok : styles.bad}`} role="status">
-              {correctFinal ? '¡Molécula correcta! +1 punto.' : 'Respuesta registrada: incorrecta.'}
+              {answer?.timedOut ? '¡Tiempo! Se revisó lo que construiste: ' : ''}
+              {correctFinal ? (answer?.timedOut ? 'correcta, +1 punto.' : '¡Molécula correcta! +1 punto.') : answer?.timedOut ? 'incorrecta.' : 'Respuesta registrada: incorrecta.'}
             </p>
             {!correctFinal ? (
               <>

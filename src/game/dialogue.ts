@@ -16,6 +16,9 @@ export type DialogueEvent =
   | 'streak'
   | 'idleHint'
   | 'bondMade'
+  | 'hurry'
+  | 'timeout'
+  | 'buildTimeout'
   | 'finish'
 
 const LINES: Record<DialogueEvent, string[]> = {
@@ -51,6 +54,9 @@ const LINES: Record<DialogueEvent, string[]> = {
     'Pista: los pares de electrones se pegan al soltarlos sobre un átomo.',
   ],
   bondMade: ['¡Eso es! Sigue así.'],
+  hurry: ['¡Quedan 10 segundos!', '¡El reloj corre! Diez segundos.'],
+  timeout: ['¡Se acabó el tiempo! Mira la respuesta correcta en la pizarra.', '¡Tiempo! No pasa nada: fíjate en la solución y sigue.'],
+  buildTimeout: ['¡Tiempo! Revisé lo que construiste: mira las piezas en rojo o pulsa «Ver solución».'],
   finish: ['¡El experimento ha terminado! Veamos tus resultados.'],
 }
 
@@ -62,6 +68,9 @@ const MOODS: Partial<Record<DialogueEvent, Mood>> = {
   incorrect: 'oops',
   buildIncorrect: 'oops',
   practiceStillWrong: 'oops',
+  hurry: 'surprised',
+  timeout: 'oops',
+  buildTimeout: 'oops',
 }
 
 const RESULT_LINES: Record<Grade, string> = {

@@ -9,7 +9,7 @@ export interface SessionState {
 }
 
 export type SessionAction =
-  | { type: 'answer'; questionId: string; correct: boolean; choiceId?: string; now: number }
+  | { type: 'answer'; questionId: string; correct: boolean; choiceId?: string; timedOut?: boolean; now: number }
   | { type: 'next'; now: number }
 
 export function createSession(now: number): SessionState {
@@ -35,6 +35,7 @@ export function sessionReducer(questions: readonly Question[]) {
           questionId: action.questionId,
           correct: action.correct,
           choiceId: action.choiceId,
+          timedOut: action.timedOut || undefined,
           answeredAt: action.now,
         }
         const answers = [...state.answers, record]

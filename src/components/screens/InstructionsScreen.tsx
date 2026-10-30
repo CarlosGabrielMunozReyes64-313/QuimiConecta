@@ -1,5 +1,6 @@
 import { GRADE_TABLE, gradeRange } from '../../game/grading'
-import { STAGES } from '../../game/questions/bank'
+import { QUESTIONS, STAGES } from '../../game/questions/bank'
+import { stageTimeLabel } from '../../game/timing'
 import type { StageFit } from '../../hooks/useStageLayout'
 import { Whiteboard } from '../board/Whiteboard'
 import { PixelButton } from '../ui/PixelButton'
@@ -37,7 +38,9 @@ export function InstructionsScreen({ fit, onBack, onStart }: Props) {
               <li key={s}>
                 <span className={styles.num}>{s}</span>
                 <div>
-                  <h2>{STAGES[s].title}</h2>
+                  <h2>
+                    {STAGES[s].title} <span className={styles.time}>({stageTimeLabel(QUESTIONS, s, 'normal')} por pregunta)</span>
+                  </h2>
                   <p>{STAGE_TEXT[s]}</p>
                 </div>
               </li>
@@ -50,7 +53,7 @@ export function InstructionsScreen({ fit, onBack, onStart }: Props) {
             </li>
           </ol>
           <table className={styles.grades}>
-            <caption>Cada acierto vale 1 punto</caption>
+            <caption>Cada acierto vale 1 punto. Si se acaba el tiempo, cuenta como fallo. En el registro puedes pedir más tiempo.</caption>
             <thead>
               <tr>
                 <th scope="col">Puntos</th>

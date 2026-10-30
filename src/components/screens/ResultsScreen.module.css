@@ -160,6 +160,10 @@
   font-size: 32px;
 }
 
+.timeouts {
+  font-size: calc(16px * var(--ts, 1));
+}
+
 .ok {
   color: var(--green-deep);
 }

@@ -15,6 +15,8 @@ export type Sfx =
   | 'finish'
   | 'blip'
   | 'shutter'
+  | 'tick'
+  | 'timeout'
 
 export interface SoundSettings {
   sfx: boolean
@@ -186,6 +188,13 @@ class SoundEngine {
         this.tone(NOTE(70 + Math.floor(Math.random() * 6)), t, 0.025, 'square', 0.025)
         break
       }
+      case 'tick':
+        this.tone(NOTE(93), t, 0.03, 'square', 0.07)
+        break
+      case 'timeout':
+        this.tone(NOTE(55), t, 0.22, 'sawtooth', 0.1)
+        this.tone(NOTE(55), t + 0.26, 0.5, 'sawtooth', 0.1, undefined, NOTE(43))
+        break
       case 'shutter':
         this.noise(t, 0.08, 0.2)
         this.tone(NOTE(96), t, 0.03, 'square', 0.06)

@@ -19,6 +19,9 @@ const PAIR_ORBIT = ATOM_RADIUS + 13
 const SNAP_FIRST = ATOM_RADIUS + 42
 const SNAP_SECOND = ATOM_RADIUS + 120
 const SNAP_PAIR = ATOM_RADIUS + 34
+/** Enlace soltado «entre» dos átomos: distancia máxima entre centros y desvío lateral admitido. */
+const BETWEEN_MAX = ATOM_RADIUS * 2 + 170
+const BETWEEN_PERP = 34
 const WALL = 400
 
 export interface AtomEntity {
@@ -373,16 +376,39 @@ export class MoleculeWorld {
     return this.drag?.id ?? null
   }
 
-  /** Átomos donde encajaría un enlace soltado ahora mismo. */
+  /**
+   * Átomos donde encajaría un enlace soltado ahora mismo.
+   * 1) Si el enlace queda sobre la línea entre dos átomos libres (cerca del centro del
+   *    segmento y a una distancia razonable), une esos dos aunque no los toque.
+   * 2) Si no, usa el átomo que toca y el siguiente más cercano.
+   */
   bondTargets(bond: BondEntity): string[] {
     const c = bond.body.position
-    const free = this.atoms()
-      .filter((a) => this.sidesUsed(a.id) < MAX_SIDES)
+    const free = this.atoms().filter((a) => this.sidesUsed(a.id) < MAX_SIDES)
+    let best: { a: string; b: string; score: number } | null = null
+    for (let i = 0; i < free.length; i++) {
+      for (let j = i + 1; j < free.length; j++) {
+        const A = free[i].body.position
+        const B = free[j].body.position
+        const dx = B.x - A.x
+        const dy = B.y - A.y
+        const len = Math.hypot(dx, dy)
+        if (len > BETWEEN_MAX || len < 1 || this.linked(free[i].id, free[j].id)) continue
+        const t = ((c.x - A.x) * dx + (c.y - A.y) * dy) / (len * len)
+        if (t < 0.2 || t > 0.8) continue
+        const perp = Math.abs((c.x - A.x) * dy - (c.y - A.y) * dx) / len
+        if (perp > BETWEEN_PERP) continue
+        const score = perp + Math.abs(t - 0.5) * 60
+        if (!best || score < best.score) best = { a: free[i].id, b: free[j].id, score }
+      }
+    }
+    if (best) return [best.a, best.b]
+    const near = free
       .map((a) => ({ a, d: Math.hypot(a.body.position.x - c.x, a.body.position.y - c.y) }))
       .sort((x, y) => x.d - y.d)
-    const first = free.find((f) => f.d <= SNAP_FIRST)
+    const first = near.find((f) => f.d <= SNAP_FIRST)
     if (!first) return []
-    const second = free.find((f) => f.a.id !== first.a.id && f.d <= SNAP_SECOND && !this.linked(first.a.id, f.a.id))
+    const second = near.find((f) => f.a.id !== first.a.id && f.d <= SNAP_SECOND && !this.linked(first.a.id, f.a.id))
     return second ? [first.a.id, second.a.id] : [first.a.id]
   }
 
