@@ -27,7 +27,7 @@ const LINES: Record<DialogueEvent, string[]> = {
   stage2: [
     'Etapa 2: ¡a construir! Arrastra los átomos, suelta un enlace entre dos de ellos y confirma cuando lo tengas.',
   ],
-  stage3: ['Etapa 3: mira la estructura de la pizarra y dime qué fórmula le corresponde.'],
+  stage3: ['Etapa 3: mira la estructura de la pizarra, cuenta los átomos de cada elemento y elige su fórmula.'],
   question: ['Siguiente reto. ¡Tú puedes!', 'Atento a la pizarra...', '¡Vamos con otra!'],
   correct: [
     '¡Excelente! ¡Ese enlace está perfectamente conectado!',
@@ -86,7 +86,7 @@ const RESULT_LINES: Record<Grade, string> = {
 /** Mensaje personalizado de la pantalla de resultados. */
 export const RESULT_MESSAGES: Record<Grade, string> = {
   S: '¡Perfecto, {name}! Dominas las estructuras de Lewis de principio a fin.',
-  A: '¡Excelente, {name}! Estás a un solo paso de la calificación perfecta.',
+  A: '¡Excelente, {name}! Estás muy cerca de la calificación perfecta.',
   B: 'Muy bien, {name}. Tienes una base sólida; afina los detalles.',
   C: 'Buen trabajo, {name}. Repasa los tipos de enlace y los pares no compartidos.',
   D: '{name}, vas en camino. Repasa la regla del octeto y vuelve a intentarlo.',

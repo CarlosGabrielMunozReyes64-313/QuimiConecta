@@ -53,7 +53,7 @@ export interface BuildQuestion extends QuestionBase {
 
 export type Question = ChoiceQuestion | FormulaQuestion | BuildQuestion
 
-export type MoleculeId = 'H2O' | 'CO2' | 'NH3' | 'CH4' | 'CH2O' | 'N2'
+export type MoleculeId = 'H2' | 'O2' | 'H2O' | 'CO2' | 'NH3' | 'N2' | 'CH4' | 'H2O2' | 'CH2O' | 'C2H4'
 
 export interface MoleculeAtom {
   id: string

@@ -1,4 +1,4 @@
-/* La fuente pixel (Minecraft ampliada con tildes, ñ y ¿) se registra en src/styles/font.ts */
+/* La fuente Andika (clara y pensada para aprender a leer) se registra en src/styles/font.ts */
 
 :root {
   /* Tinta de rotulador y contornos */
@@ -36,7 +36,7 @@
   --atom-o: #e8484a;
 
   --panel: rgba(0, 20, 32, 0.86);
-  --font: 'Minecraft ES', 'Courier New', monospace;
+  --font: 'Andika', 'Trebuchet MS', 'Segoe UI', Arial, sans-serif;
   --step: 4px;
 
   color-scheme: light dark;
@@ -62,10 +62,9 @@ body {
   font-size: 16px;
   line-height: 1.5;
   overflow: hidden;
-  -webkit-font-smoothing: none;
+  -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-smooth: never;
-  text-rendering: optimizeSpeed;
+  text-rendering: optimizeLegibility;
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior: none;
 }

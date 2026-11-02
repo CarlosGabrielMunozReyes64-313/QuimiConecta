@@ -1,6 +1,7 @@
 import type { AnswerRecord, Grade } from '../types/game'
 
-export const MAX_SCORE = 9
+/** Puntuación máxima: una por pregunta (15 preguntas). */
+export const MAX_SCORE = 15
 
 interface GradeInfo {
   grade: Grade
@@ -9,14 +10,17 @@ interface GradeInfo {
   min: number
 }
 
-/** Tabla oficial: 9 S · 8 A · 7 B · 6 C · 4–5 D · 2–3 E · 0–1 F */
+/**
+ * Tabla para 15 preguntas (proporcional a la original de 9):
+ * 15 S · 13–14 A · 11–12 B · 9–10 C · 7–8 D · 4–6 E · 0–3 F
+ */
 export const GRADE_TABLE: readonly GradeInfo[] = [
-  { grade: 'S', label: 'Perfecto', min: 9 },
-  { grade: 'A', label: 'Excelente', min: 8 },
-  { grade: 'B', label: 'Muy bueno', min: 7 },
-  { grade: 'C', label: 'Bueno', min: 6 },
-  { grade: 'D', label: 'En proceso', min: 4 },
-  { grade: 'E', label: 'Necesita mejorar', min: 2 },
+  { grade: 'S', label: 'Perfecto', min: 15 },
+  { grade: 'A', label: 'Excelente', min: 13 },
+  { grade: 'B', label: 'Muy bueno', min: 11 },
+  { grade: 'C', label: 'Bueno', min: 9 },
+  { grade: 'D', label: 'En proceso', min: 7 },
+  { grade: 'E', label: 'Necesita mejorar', min: 4 },
   { grade: 'F', label: 'Debe reforzar', min: 0 },
 ]
 
@@ -38,7 +42,7 @@ export function scoreOf(answers: readonly AnswerRecord[]): number {
 }
 
 /**
- * Calificación provisional: proyecta el porcentaje de aciertos actual a 9 preguntas.
+ * Calificación provisional: proyecta el porcentaje de aciertos actual a 15 preguntas.
  * Devuelve null si todavía no hay respuestas.
  */
 export function provisionalGrade(answers: readonly AnswerRecord[]): GradeInfo | null {

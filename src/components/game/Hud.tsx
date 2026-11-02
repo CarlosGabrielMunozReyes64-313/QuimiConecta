@@ -23,12 +23,12 @@ export function Hud({ questions, answers, index, orientation, rect, onMenu }: Pr
       <p className={styles.logo}>QuimiConecta</p>
       <div className={styles.center}>
         <p className={styles.stage}>
-          Etapa {q.stage}: {STAGES[q.stage].title.toLowerCase()}
+          Etapa {q.stage}: {(orientation === 'portrait' ? STAGES[q.stage].short : STAGES[q.stage].title).toLowerCase()}
           <span className={styles.count}>
             Pregunta {index + 1} de {questions.length}
           </span>
         </p>
-        <ProgressTrack questions={questions} answers={answers} currentIndex={index} />
+        <ProgressTrack questions={questions} answers={answers} currentIndex={index} small={orientation === 'portrait'} />
       </div>
       <div className={styles.right}>
         <SoundToggles />

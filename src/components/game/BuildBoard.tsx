@@ -147,7 +147,9 @@ export function BuildBoard({ question, answer, orientation, isLast, limitMs, pau
         <h2 className={styles.prompt}>
           <ChemText text={question.prompt} />
         </h2>
-        <p className={styles.hint}>{question.hint}</p>
+        <p className={styles.hint}>
+          <ChemText text={question.hint} />
+        </p>
       </ScrollBanner>
 
       {limitMs !== null && remaining !== null ? (

@@ -28,8 +28,8 @@ describe('tiempo límite', () => {
     expect(formatClock(24_100)).toBe('25')
     expect(formatClock(105_000)).toBe('1:45')
     expect(stageTimeLabel(QUESTIONS, 1, 'normal')).toBe('30–40 s')
-    expect(stageTimeLabel(QUESTIONS, 2, 'normal')).toBe('2 min a 2 min 30 s')
-    expect(stageTimeLabel(QUESTIONS, 3, 'amplio')).toBe('1 min 20 s')
+    expect(stageTimeLabel(QUESTIONS, 2, 'normal')).toBe('1 min 30 s a 2 min 30 s')
+    expect(stageTimeLabel(QUESTIONS, 3, 'amplio')).toBe('1 min 20 s a 1 min 30 s')
     expect(stageTimeLabel(QUESTIONS, 1, 'libre')).toBe('sin límite')
   })
 

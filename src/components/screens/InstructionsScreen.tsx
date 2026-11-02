@@ -14,9 +14,9 @@ interface Props {
 }
 
 const STAGE_TEXT: Record<1 | 2 | 3, string> = {
-  1: 'Tres preguntas de opción múltiple sobre el octeto, el dueto y los electrones de valencia.',
-  2: 'Arrastra átomos, suelta enlaces entre ellos y añade pares de electrones si se piden. Luego confirma.',
-  3: 'Mira la estructura de Lewis de la pizarra y elige su fórmula química.',
+  1: 'Preguntas de opción múltiple sobre moléculas, el octeto, el dueto y los electrones.',
+  2: 'Arrastra átomos, suelta enlaces entre ellos y añade pares de puntos si se piden. Luego confirma.',
+  3: 'Mira la molécula de la pizarra, cuenta sus átomos y elige su fórmula química.',
 }
 
 /** Cómo se juega, controles y escala de calificación. */
@@ -52,25 +52,30 @@ export function InstructionsScreen({ fit, onBack, onStart }: Props) {
               </div>
             </li>
           </ol>
-          <table className={styles.grades}>
-            <caption>Cada acierto vale 1 punto. Si se acaba el tiempo, cuenta como fallo. En el registro puedes pedir más tiempo.</caption>
-            <thead>
-              <tr>
-                <th scope="col">Puntos</th>
-                <th scope="col">Nota</th>
-                <th scope="col">Resultado</th>
-              </tr>
-            </thead>
-            <tbody>
-              {GRADE_TABLE.map((g) => (
-                <tr key={g.grade}>
-                  <td>{gradeRange(g.grade)}</td>
-                  <td className={styles.letter}>{g.grade}</td>
-                  <td>{g.label}</td>
+          <div className={styles.gradesBox}>
+            <table className={styles.grades} aria-describedby="grades-note">
+              <caption className="sr-only">Escala de calificación</caption>
+              <thead>
+                <tr>
+                  <th scope="col">Puntos</th>
+                  <th scope="col">Nota</th>
+                  <th scope="col">Resultado</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {GRADE_TABLE.map((g) => (
+                  <tr key={g.grade}>
+                    <td>{gradeRange(g.grade)}</td>
+                    <td className={styles.letter}>{g.grade}</td>
+                    <td>{g.label}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <p id="grades-note" className={styles.gradesNote}>
+              Cada acierto vale 1 punto. Si se acaba el tiempo, cuenta como fallo. En el registro puedes pedir más tiempo.
+            </p>
+          </div>
         </div>
         <div className={styles.actions}>
           <PixelButton variant="wood" onClick={onBack} icon={<PixelIcon name="back" cell={3} />}>

@@ -5,7 +5,7 @@ import { ATOM_RADIUS, MoleculeWorld, type WorldEvent } from '../game/physics/Mol
 import { QUESTIONS } from '../game/questions/bank'
 import type { BuildQuestion } from '../types/game'
 
-const build = (id: string) => QUESTIONS.find((q) => q.id === id) as BuildQuestion
+const build = (moleculeId: string) => QUESTIONS.find((q) => q.kind === 'build' && q.moleculeId === moleculeId) as BuildQuestion
 
 function run(world: MoleculeWorld, frames: number) {
   for (let i = 0; i < frames; i++) world.step(1000 / 60)
@@ -13,7 +13,7 @@ function run(world: MoleculeWorld, frames: number) {
 
 describe('mundo físico (Matter.js)', () => {
   it('crea las piezas de la pregunta y las deja dentro del área', () => {
-    const q = build('q4')
+    const q = build('H2O')
     const world = new MoleculeWorld({ width: 736, height: 300, pieces: q.pieces, reducedMotion: false })
     expect(world.atoms()).toHaveLength(3)
     expect(world.bonds()).toHaveLength(3)
@@ -31,7 +31,7 @@ describe('mundo físico (Matter.js)', () => {
 
   it('conecta un enlace al arrastrarlo y soltarlo entre dos átomos', () => {
     const events: WorldEvent[] = []
-    const world = new MoleculeWorld({ width: 736, height: 300, pieces: build('q4').pieces, reducedMotion: true, onEvent: (e) => events.push(e) })
+    const world = new MoleculeWorld({ width: 736, height: 300, pieces: build('H2O').pieces, reducedMotion: true, onEvent: (e) => events.push(e) })
     const [o, h1] = world.atoms()
     world.nudge(o.id, 300 - o.body.position.x, 120 - o.body.position.y)
     world.nudge(h1.id, 400 - h1.body.position.x, 120 - h1.body.position.y)
@@ -52,7 +52,7 @@ describe('mundo físico (Matter.js)', () => {
   })
 
   it('une dos átomos separados si el enlace se suelta en la línea entre ellos', () => {
-    const world = new MoleculeWorld({ width: 736, height: 300, pieces: build('q4').pieces, reducedMotion: true })
+    const world = new MoleculeWorld({ width: 736, height: 300, pieces: build('H2O').pieces, reducedMotion: true })
     const [o, h1, h2] = world.atoms()
     world.nudge(o.id, 250 - o.body.position.x, 120 - o.body.position.y)
     world.nudge(h1.id, 420 - h1.body.position.x, 120 - h1.body.position.y)
@@ -69,7 +69,7 @@ describe('mundo físico (Matter.js)', () => {
   })
 
   it('construye H₂O completo y la validación lo acepta', () => {
-    const world = new MoleculeWorld({ width: 736, height: 300, pieces: build('q4').pieces, reducedMotion: true })
+    const world = new MoleculeWorld({ width: 736, height: 300, pieces: build('H2O').pieces, reducedMotion: true })
     const o = world.atoms().find((a) => a.element === 'O')
     const hs = world.atoms().filter((a) => a.element === 'H')
     const singles = world.bonds().filter((b) => b.order === 1)
@@ -105,7 +105,7 @@ describe('mundo físico (Matter.js)', () => {
   })
 
   it('suelta un enlace al desconectarlo y bloquea la edición tras confirmar', () => {
-    const world = new MoleculeWorld({ width: 736, height: 300, pieces: build('q6').pieces, reducedMotion: true })
+    const world = new MoleculeWorld({ width: 736, height: 300, pieces: build('NH3').pieces, reducedMotion: true })
     const n = world.atoms().find((a) => a.element === 'N')
     const h = world.atoms().find((a) => a.element === 'H')
     const bond = world.bonds()[0]

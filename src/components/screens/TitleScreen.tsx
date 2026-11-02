@@ -1,4 +1,5 @@
 import { sound } from '../../audio/sound'
+import { TOTAL_QUESTIONS } from '../../game/questions/bank'
 import type { StageFit } from '../../hooks/useStageLayout'
 import { WalkingScientist } from '../characters/WalkingScientist'
 import { Whiteboard } from '../board/Whiteboard'
@@ -51,7 +52,7 @@ export function TitleScreen({ fit, onStart, onInstructions }: Props) {
               Instrucciones
             </PixelButton>
           </div>
-          <p className={styles.meta}>9 preguntas en 3 etapas. Calificación de S a F.</p>
+          <p className={styles.meta}>{TOTAL_QUESTIONS} preguntas en 3 etapas. Calificación de S a F.</p>
         </div>
       </Whiteboard>
       <div className={styles.floor} style={{ width: layout.width }}>

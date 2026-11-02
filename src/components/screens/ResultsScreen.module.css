@@ -52,8 +52,16 @@
 }
 
 .portrait .top {
-  flex-direction: column;
-  align-items: flex-start;
+  gap: 20px;
+}
+
+.portrait .stamp {
+  width: 140px;
+  height: 140px;
+}
+
+.portrait .stampLetter {
+  font-size: 76px;
 }
 
 .stamp {
@@ -82,6 +90,8 @@
 
 .stampLabel {
   font-size: calc(16px * var(--ts, 1));
+  line-height: 1.2;
+  text-align: center;
 }
 
 .gS,
@@ -146,7 +156,8 @@
 
 .stats {
   display: flex;
-  gap: 24px;
+  flex-wrap: wrap;
+  gap: 8px 24px;
   margin: 0;
 }
 

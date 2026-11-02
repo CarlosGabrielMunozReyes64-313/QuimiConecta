@@ -1,3 +1,4 @@
+import { GAME_FONT_STACK } from '../../styles/font'
 import type { MoleculeSpec } from '../../types/game'
 
 interface Props {
@@ -82,7 +83,7 @@ export function StructureDiagram({ molecule, width, height, unit = 92, showPairs
             x={snap(p.x)}
             y={snap(p.y) + 14}
             textAnchor="middle"
-            fontFamily="'Minecraft ES', monospace"
+            fontFamily={GAME_FONT_STACK}
             fontSize={LETTER}
             fill={ink}
           >

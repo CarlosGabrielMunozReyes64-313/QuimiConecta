@@ -3,15 +3,18 @@ import { formatDuration, gradeFor, gradeRange, provisionalGrade } from '../game/
 
 describe('escala de calificaciones', () => {
   it.each([
-    [9, 'S', 'Perfecto'],
-    [8, 'A', 'Excelente'],
-    [7, 'B', 'Muy bueno'],
-    [6, 'C', 'Bueno'],
-    [5, 'D', 'En proceso'],
-    [4, 'D', 'En proceso'],
-    [3, 'E', 'Necesita mejorar'],
-    [2, 'E', 'Necesita mejorar'],
-    [1, 'F', 'Debe reforzar'],
+    [15, 'S', 'Perfecto'],
+    [14, 'A', 'Excelente'],
+    [13, 'A', 'Excelente'],
+    [12, 'B', 'Muy bueno'],
+    [11, 'B', 'Muy bueno'],
+    [10, 'C', 'Bueno'],
+    [9, 'C', 'Bueno'],
+    [8, 'D', 'En proceso'],
+    [7, 'D', 'En proceso'],
+    [6, 'E', 'Necesita mejorar'],
+    [4, 'E', 'Necesita mejorar'],
+    [3, 'F', 'Debe reforzar'],
     [0, 'F', 'Debe reforzar'],
   ])('%i puntos = %s (%s)', (score, grade, label) => {
     expect(gradeFor(score).grade).toBe(grade)
@@ -19,9 +22,10 @@ describe('escala de calificaciones', () => {
   })
 
   it('muestra los rangos de la tabla', () => {
-    expect(gradeRange('S')).toBe('9')
-    expect(gradeRange('D')).toBe('4–5')
-    expect(gradeRange('F')).toBe('0–1')
+    expect(gradeRange('S')).toBe('15')
+    expect(gradeRange('A')).toBe('13–14')
+    expect(gradeRange('E')).toBe('4–6')
+    expect(gradeRange('F')).toBe('0–3')
   })
 
   it('proyecta la calificación provisional', () => {

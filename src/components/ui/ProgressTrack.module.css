@@ -41,3 +41,19 @@
     background: #fff4c2;
   }
 }
+
+/* Vertical: 15 casillas deben caber junto al nombre de la etapa */
+.small {
+  gap: 2px;
+}
+
+.small .cell {
+  width: 24px;
+  height: 24px;
+  border-width: 3px;
+  font-size: calc(13px * var(--ts, 1));
+}
+
+.small .stageStart {
+  margin-left: 6px;
+}

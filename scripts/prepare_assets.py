@@ -4,15 +4,15 @@ Prepara los assets derivados de QuimiConecta a partir de los originales.
 Los originales se copian sin modificar. Los derivados respetan los píxeles
 de origen: solo se recortan, se reordenan o se amplían con vecino más cercano.
 
-  - Minecraft-ES.ttf: la fuente original + glifos del español (á é í ó ú ñ ü ¿ ...)
-    dibujados sobre la misma rejilla de 128 unidades por píxel.
   - board-landscape.png / board-portrait.png: la pizarra original recompuesta
     en 9 partes (esquinas intactas, bandeja del rotulador sin estirar).
   - messenger-ring.png: el icono Messenger a su resolución nativa (bloques de 8 px)
     con el interior de la cabeza vaciado, para superponer el aro sobre la foto.
   - src/game/avatarGeometry.ts: geometría del círculo, generada a partir de la imagen.
 
-Uso: python3 scripts/prepare_assets.py <carpeta_uploads> <carpeta_fuente_minecraft>
+La fuente (Andika, licencia OFL) no se genera: está en src/assets/fonts.
+
+Uso: python3 scripts/prepare_assets.py <carpeta_uploads>
 """
 import json
 import shutil
@@ -21,163 +21,17 @@ from pathlib import Path
 
 import numpy as np
 from PIL import Image
-from fontTools.ttLib import TTFont
-from fontTools.ttLib.tables._g_l_y_f import Glyph, GlyphCoordinates
 
 ROOT = Path(__file__).resolve().parent.parent
 UPLOADS = Path(sys.argv[1] if len(sys.argv) > 1 else "/mnt/user-data/uploads")
-FONT_DIR = Path(sys.argv[2] if len(sys.argv) > 2 else "/home/claude/work/mc")
 SPRITES = ROOT / "src/assets/sprites"
-FONTS = ROOT / "src/assets/fonts"
 SPRITES.mkdir(parents=True, exist_ok=True)
-FONTS.mkdir(parents=True, exist_ok=True)
 
 # ---------------------------------------------------------------- originales
 shutil.copy(UPLOADS / "lablady_spritesheet_BOXED.png", SPRITES / "scientist-sheet.png")
 shutil.copy(UPLOADS / "image.png", SPRITES / "lab-background.png")
 shutil.copy(UPLOADS / "image__1_.png", SPRITES / "messenger.png")
 shutil.copy(UPLOADS / "image-removebg-preview.png", SPRITES / "whiteboard-original.png")
-
-# ---------------------------------------------------------------- fuente
-PX = 128  # unidades por píxel de la fuente Minecraft (upem 1024)
-
-
-def contours_of(glyf, name):
-    g = glyf[name]
-    if g.numberOfContours <= 0:
-        return []
-    coords, ends, flags = g.getCoordinates(glyf)
-    out, start = [], 0
-    for e in ends:
-        out.append([(int(x), int(y)) for x, y in coords[start:e + 1]])
-        start = e + 1
-    return out
-
-
-def rect(x0, y0, x1, y1):
-    # sentido horario (TrueType): contorno exterior
-    return [(x0, y0), (x0, y1), (x1, y1), (x1, y0)]
-
-
-def bbox(contours):
-    xs = [x for c in contours for x, _ in c]
-    ys = [y for c in contours for _, y in c]
-    return min(xs), min(ys), max(xs), max(ys)
-
-
-def translate(contours, dx, dy):
-    return [[(x + dx, y + dy) for x, y in c] for c in contours]
-
-
-def make_glyph(contours):
-    g = Glyph()
-    pts, ends = [], []
-    for c in contours:
-        pts.extend(c)
-        ends.append(len(pts) - 1)
-    g.coordinates = GlyphCoordinates(pts)
-    g.endPtsOfContours = ends
-    g.flags = bytearray([1] * len(pts))
-    g.numberOfContours = len(ends)
-    g.program = None
-    from fontTools.ttLib.tables import ttProgram
-    g.program = ttProgram.Program()
-    g.program.fromBytecode(b"")
-    return g
-
-
-def snap(v):
-    return int(round(v / (PX / 2)) * (PX / 2))
-
-
-def acute(cx, y0):
-    # dos píxeles en diagonal, de abajo-izquierda a arriba-derecha
-    return [rect(cx - PX, y0, cx, y0 + PX), rect(cx, y0 + PX, cx + PX, y0 + 2 * PX)]
-
-
-def patch_font():
-    font = TTFont(FONT_DIR / "Minecraft.ttf")
-    glyf, hmtx = font["glyf"], font["hmtx"]
-    cmap = font.getBestCmap()
-    order = font.getGlyphOrder()
-    tilde = contours_of(glyf, cmap[ord("~")])
-    dier = contours_of(glyf, cmap[ord("¨")])
-    new = {}
-
-    def base_info(ch):
-        name = cmap[ord(ch)]
-        return name, contours_of(glyf, name), hmtx[name]
-
-    def compose(ch, base_ch, accent, upper):
-        name, base, metrics = base_info(base_ch)
-        if base_ch == "i":  # i sin punto: solo el contorno del fuste
-            base = [c for c in base if max(y for _, y in c) <= 576]
-        x0, _, x1, _ = bbox(base)
-        cx = snap((x0 + x1) / 2)
-        y0 = 832 if upper else 640
-        if accent == "acute":
-            acc = acute(cx, y0)
-        elif accent == "tilde":
-            tx0, ty0, tx1, _ = bbox(tilde)
-            acc = translate(tilde, cx - snap((tx0 + tx1) / 2), (y0 + 64) - ty0)
-        else:  # diéresis
-            dx0, dy0, dx1, _ = bbox(dier)
-            acc = translate(dier, cx - snap((dx0 + dx1) / 2), y0 - dy0)
-        new[ch] = (make_glyph(base + acc), metrics)
-
-    for ch, b in zip("áéíóú", "aeiou"):
-        compose(ch, b, "acute", False)
-    for ch, b in zip("ÁÉÍÓÚ", "AEIOU"):
-        compose(ch, b, "acute", True)
-    compose("ñ", "n", "tilde", False)
-    compose("Ñ", "N", "tilde", True)
-    compose("ü", "u", "dier", False)
-    compose("Ü", "U", "dier", True)
-
-    # ¿ = ? girado 180°, colocado como ¡ (desciende bajo la línea base)
-    qname, q, qm = base_info("?")
-    x0, y0, x1, y1 = bbox(q)
-    rot = [[(x0 + x1 - x, y0 + y1 - y) for x, y in c] for c in q]
-    rot = translate(rot, 0, -192 - y0)
-    new["¿"] = (make_glyph(rot), qm)
-
-    # – (raya corta) a partir del guion, más ancho
-    hname, hy, hm = base_info("-")
-    hx0, hy0, hx1, hy1 = bbox(hy)
-    new["–"] = (make_glyph([rect(0, hy0, 640, hy1)]), (704, 0))
-    # · punto medio
-    new["·"] = (make_glyph([rect(0, 256, PX, 384)]), (192, 0))
-    # º ordinal
-    new["º"] = (make_glyph([rect(0, 512, 384, 576), rect(0, 576, PX, 768), rect(256, 576, 384, 768), rect(0, 768, 384, 832)]), (448, 0))
-
-    for ch, (g, metrics) in new.items():
-        gname = f"uni{ord(ch):04X}"
-        order.append(gname)
-        glyf.glyphs[gname] = g
-        hmtx.metrics[gname] = (metrics[0], 0)
-        for table in font["cmap"].tables:
-            if table.isUnicode():
-                table.cmap[ord(ch)] = gname
-    font.setGlyphOrder(order)
-    glyf.glyphOrder = order
-    if "post" in font and font["post"].formatType == 2.0:
-        font["post"].extraNames = []
-        font["post"].mapping = {}
-    # nombre de familia distinto para no chocar con la original instalada
-    for rec in font["name"].names:
-        if rec.nameID in (1, 4, 6):
-            try:
-                txt = rec.toUnicode()
-            except Exception:
-                continue
-            rec.string = txt.replace("Minecraft", "Minecraft ES").replace("Minecraft ES-", "MinecraftES-")
-    font.save(FONTS / "Minecraft-ES.ttf")
-    check = TTFont(FONTS / "Minecraft-ES.ttf").getBestCmap()
-    missing = [c for c in "áéíóúÁÉÍÓÚñÑüÜ¿¡–·º" if ord(c) not in check]
-    print("fuente ampliada; faltan:", missing or "ninguno")
-
-
-patch_font()
 
 # ---------------------------------------------------------------- pizarra
 board = np.array(Image.open(UPLOADS / "image-removebg-preview.png").convert("RGBA"))

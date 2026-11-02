@@ -1,14 +1,20 @@
 # QuimiConecta
 
-Videojuego educativo web en pixel art de 16 bits sobre estructuras de Lewis y enlaces químicos, para secundaria. Es un concurso: el estudiante (icono de Messenger con su foto) responde en la pizarra central mientras el Prof. Enlace comenta cada jugada.
+Videojuego educativo web en pixel art de 16 bits sobre estructuras de Lewis y enlaces químicos, pensado para primero de secundaria. Es un concurso: el estudiante (icono de Messenger con su foto) responde en la pizarra central mientras el Prof. Enlace comenta cada jugada.
 
-Son nueve preguntas en tres etapas, cada una de un punto:
+Son quince preguntas en tres etapas, cada una de un punto:
 
-1. **Reglas básicas** (preguntas 1–3): opción múltiple sobre octeto, dueto, electrones de valencia y Lewis.
-2. **Construcción molecular** (preguntas 4–6): rompecabezas con Matter.js. Se construyen H₂O, CO₂ y NH₃ arrastrando átomos, soltando piezas de enlace entre ellos y añadiendo pares de electrones no compartidos.
-3. **Fórmulas químicas** (preguntas 7–9): se identifica la fórmula de una estructura de Lewis dibujada.
+1. **Reglas básicas** (preguntas 1–5): opción múltiple sobre qué es una molécula, el octeto, el dueto, los puntos de Lewis y los subíndices de una fórmula.
+2. **Construcción molecular** (preguntas 6–10): rompecabezas con Matter.js. Se construyen H₂, O₂, H₂O, CO₂ y NH₃ arrastrando átomos, soltando piezas de enlace entre ellos y añadiendo pares de electrones no compartidos. Las pistas dicen qué átomo va en el centro y cuántos pares lleva.
+3. **Fórmulas químicas** (preguntas 11–15): se cuentan los átomos de una estructura de Lewis dibujada (N₂, CH₄, H₂O₂, CH₂O y C₂H₄) y se elige su fórmula.
 
-La calificación va de S (9 puntos) a F (0–1) según la tabla del enunciado.
+La calificación va de S a F con esta tabla (proporcional a la original de 9 preguntas):
+
+| Puntos | 15 | 13–14 | 11–12 | 9–10 | 7–8 | 4–6 | 0–3 |
+|---|---|---|---|---|---|---|---|
+| Nota | S | A | B | C | D | E | F |
+
+Se cambia en `src/game/grading.ts`.
 
 ## Tiempo límite
 
@@ -16,9 +22,9 @@ Cada pregunta tiene su propio tiempo, definido en `timeLimit` dentro de `bank.ts
 
 | Etapa | Tiempo (modo Normal) |
 |---|---|
-| 1. Reglas básicas | 30 s, 30 s y 40 s |
-| 2. Construcción molecular | 2 min, 2 min y 2 min 30 s |
-| 3. Fórmulas químicas | 40 s cada una |
+| 1. Reglas básicas | 30 s, 30 s, 30 s, 40 s y 40 s |
+| 2. Construcción molecular | 1 min 30 s, 1 min 30 s, 2 min, 2 min y 2 min 30 s |
+| 3. Fórmulas químicas | 40 s (45 s la última, que tiene más átomos) |
 
 - **Si se agota en opción múltiple**, cuenta como fallo y se muestra la respuesta correcta.
 - **Si se agota en construcción**, se revisa lo que el estudiante haya montado y puede ganar el punto si estaba bien.
@@ -32,7 +38,7 @@ Cada pregunta tiene su propio tiempo, definido en `timeLimit` dentro de `bank.ts
 ```bash
 npm install
 npm run dev          # http://localhost:5173 (la cámara exige localhost o HTTPS)
-npm test             # 42 pruebas con Vitest
+npm test             # 46 pruebas con Vitest
 npm run typecheck    # TypeScript estricto
 npm run lint         # Oxlint
 npm run build        # build de producción en dist/
@@ -44,7 +50,7 @@ npm run build:single # un único quimiconecta.html autocontenido
 ```
 src/
   game/                 lógica sin interfaz
-    questions/bank.ts   banco de las 9 preguntas (editar aquí)
+    questions/bank.ts   banco de las 15 preguntas (editar aquí)
     molecular/          moléculas, dibujo de Lewis y validador químico
     physics/            MoleculeWorld: integración con Matter.js
     grading.ts          escala S–F y calificación provisional
@@ -76,9 +82,11 @@ Los originales están en `src/assets/sprites` sin modificar: `scientist-sheet.pn
 
 - **`board-*.png`**: la pizarra recompuesta en 9 partes para cada formato. Las esquinas, la cuadrícula y la bandeja con el rotulador no se estiran.
 - **`messenger-ring.png` y `messenger-gloss.png`**: el aro y el brillo de la cabeza del Messenger, para colocar la foto dentro del círculo original. El círculo se midió por ajuste de elipse sobre el sprite.
-- **`Minecraft-ES.ttf`**: la fuente Minecraft entregada, que no tenía tildes, ñ, ü ni ¿. Esos glifos se dibujaron sobre su misma rejilla de píxeles.
+Uso: `python3 scripts/prepare_assets.py <carpeta_con_las_imágenes>` (requiere Pillow y NumPy).
 
-Uso: `python3 scripts/prepare_assets.py <carpeta_con_las_imágenes> <carpeta_con_Minecraft.ttf>` (requiere Pillow, NumPy y fontTools).
+## Tipografía
+
+El texto usa **Andika** (SIL International), una fuente diseñada para quienes están aprendiendo a leer: letras amplias y fáciles de distinguir (a y g de un solo piso, I mayúscula con remates, l con cola). Los archivos están en `src/assets/fonts` junto con su licencia (`OFL-Andika.txt`, SIL Open Font License) y se cargan desde `src/styles/font.ts`, así que funciona sin conexión y también en `quimiconecta.html`.
 
 Del spritesheet del científico se usan los retratos de hablar y parpadear (46×46; la última fila trae píxeles amarillos de la cuadrícula) y la animación de caminar en el menú.
 
@@ -93,8 +101,9 @@ Del spritesheet del científico se usan los retratos de hablar y parpadear (46×
 
 ## Decisiones a revisar
 
-- **Etapa 3:** usa CH₄, CH₂O y N₂ en lugar de repetir H₂O, CO₂ y NH₃, que el estudiante acaba de construir. Se cambia en `bank.ts`.
-- **Piezas sobrantes:** las preguntas 4 y 6 incluyen un enlace doble y un par de electrones de más. Así hay que decidir, no solo colocar.
+- **Etapa 3:** usa N₂, CH₄, H₂O₂, CH₂O y C₂H₄ en lugar de repetir las moléculas que el estudiante acaba de construir. Se cambia en `bank.ts`.
+- **Piezas sobrantes:** todas las construcciones traen alguna pieza de más (un enlace o un par de electrones). Así hay que decidir, no solo colocar.
+- **Pares de electrones:** solo se piden en H₂O y NH₃. En H₂, O₂ y CO₂ basta con los enlaces.
 - **Proyecto base:** el zip original solo contenía el README de la plantilla `react-compiler-ts` de Vite. Se generó esa misma plantilla; la versión actual usa Oxlint en lugar de ESLint.
 
 ## Privacidad

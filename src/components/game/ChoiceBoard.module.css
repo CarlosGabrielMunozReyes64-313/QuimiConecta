@@ -42,7 +42,7 @@
 
 .options {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
   width: 100%;
 }
@@ -74,6 +74,20 @@
 .formula .option {
   font-size: 32px;
   min-height: 84px;
+  gap: 12px;
+  padding-right: 12px;
+}
+
+/* En las fórmulas la marca ✓/✗ va en la esquina para no quitar espacio al texto;
+   el relleno del grupo deja sitio para que la esquina no se recorte. */
+.formula .options {
+  padding: 12px 12px 0 0;
+}
+
+.formula .mark {
+  position: absolute;
+  top: -12px;
+  right: -12px;
 }
 
 .option:hover:not(:disabled) {
@@ -224,4 +238,44 @@
 
 .verdictBad strong {
   color: var(--red-deep);
+}
+
+/* ---------------------------------------------------------------- Vertical */
+/* Enunciado algo más pequeño para que quepa en dos líneas. */
+.portrait .prompt {
+  font-size: calc(22px * var(--ts, 1));
+  line-height: calc(30px * var(--ts, 1));
+}
+
+.portrait .promptLong {
+  font-size: calc(20px * var(--ts, 1));
+  line-height: calc(28px * var(--ts, 1));
+}
+
+/* Opciones en una sola columna: cada respuesta se lee en una línea. */
+.portrait .options {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+}
+
+.portrait .option {
+  min-height: 60px;
+  padding-top: 8px;
+  padding-bottom: 12px;
+}
+
+/* Fórmulas: la molécula a la izquierda y las cuatro fórmulas a la derecha. */
+.formula.portrait .body {
+  flex-direction: row;
+  gap: 14px;
+}
+
+.formula.portrait .options {
+  flex: 1;
+  width: auto;
+}
+
+.formula.portrait .option {
+  min-height: 60px;
+  font-size: 30px;
 }

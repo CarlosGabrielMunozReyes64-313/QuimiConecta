@@ -87,8 +87,8 @@ export function ChoiceBoard({ question, answer, orientation, isLast, limitMs, pa
           <figure className={styles.figure}>
             <StructureDiagram
               molecule={figure}
-              width={orientation === 'portrait' ? 560 : 330}
-              height={orientation === 'portrait' ? 230 : 250}
+              width={orientation === 'portrait' ? 320 : 330}
+              height={250}
               label={`Estructura de Lewis de una molécula: ${figure.atoms.map((a) => a.element).join(', ')}`}
             />
           </figure>

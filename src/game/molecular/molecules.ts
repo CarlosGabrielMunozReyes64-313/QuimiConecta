@@ -5,6 +5,36 @@ import type { Element, MoleculeId, MoleculeSpec } from '../../types/game'
  * los pares no compartidos y cómo dibujar su estructura de Lewis.
  */
 export const MOLECULES: Record<MoleculeId, MoleculeSpec> = {
+  H2: {
+    id: 'H2',
+    name: 'hidrógeno',
+    formula: 'H₂',
+    atoms: [
+      { id: 'H1', element: 'H' },
+      { id: 'H2', element: 'H' },
+    ],
+    bonds: [{ a: 'H1', b: 'H2', order: 1 }],
+    lonePairs: {},
+    drawing: {
+      positions: { H1: { x: -0.6, y: 0 }, H2: { x: 0.6, y: 0 } },
+      pairAngles: {},
+    },
+  },
+  O2: {
+    id: 'O2',
+    name: 'oxígeno',
+    formula: 'O₂',
+    atoms: [
+      { id: 'O1', element: 'O' },
+      { id: 'O2', element: 'O' },
+    ],
+    bonds: [{ a: 'O1', b: 'O2', order: 2 }],
+    lonePairs: { O1: 2, O2: 2 },
+    drawing: {
+      positions: { O1: { x: -0.6, y: 0 }, O2: { x: 0.6, y: 0 } },
+      pairAngles: { O1: [-130, 130], O2: [-50, 50] },
+    },
+  },
   H2O: {
     id: 'H2O',
     name: 'agua',
@@ -137,6 +167,59 @@ export const MOLECULES: Record<MoleculeId, MoleculeSpec> = {
     drawing: {
       positions: { N1: { x: -0.6, y: 0 }, N2: { x: 0.6, y: 0 } },
       pairAngles: { N1: [180], N2: [0] },
+    },
+  },
+  H2O2: {
+    id: 'H2O2',
+    name: 'peróxido de hidrógeno (agua oxigenada)',
+    formula: 'H₂O₂',
+    atoms: [
+      { id: 'O1', element: 'O' },
+      { id: 'O2', element: 'O' },
+      { id: 'H1', element: 'H' },
+      { id: 'H2', element: 'H' },
+    ],
+    bonds: [
+      { a: 'H1', b: 'O1', order: 1 },
+      { a: 'O1', b: 'O2', order: 1 },
+      { a: 'O2', b: 'H2', order: 1 },
+    ],
+    lonePairs: { O1: 2, O2: 2 },
+    drawing: {
+      positions: { H1: { x: -1.6, y: 0 }, O1: { x: -0.55, y: 0 }, O2: { x: 0.55, y: 0 }, H2: { x: 1.6, y: 0 } },
+      pairAngles: { O1: [-90, 90], O2: [-90, 90] },
+    },
+  },
+  C2H4: {
+    id: 'C2H4',
+    name: 'etileno (eteno)',
+    formula: 'C₂H₄',
+    atoms: [
+      { id: 'C1', element: 'C' },
+      { id: 'C2', element: 'C' },
+      { id: 'H1', element: 'H' },
+      { id: 'H2', element: 'H' },
+      { id: 'H3', element: 'H' },
+      { id: 'H4', element: 'H' },
+    ],
+    bonds: [
+      { a: 'C1', b: 'C2', order: 2 },
+      { a: 'C1', b: 'H1', order: 1 },
+      { a: 'C1', b: 'H2', order: 1 },
+      { a: 'C2', b: 'H3', order: 1 },
+      { a: 'C2', b: 'H4', order: 1 },
+    ],
+    lonePairs: {},
+    drawing: {
+      positions: {
+        C1: { x: -0.6, y: 0 },
+        C2: { x: 0.6, y: 0 },
+        H1: { x: -1.3, y: -0.8 },
+        H2: { x: -1.3, y: 0.8 },
+        H3: { x: 1.3, y: -0.8 },
+        H4: { x: 1.3, y: 0.8 },
+      },
+      pairAngles: {},
     },
   },
 }

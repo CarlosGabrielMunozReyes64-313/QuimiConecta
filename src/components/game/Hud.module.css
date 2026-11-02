@@ -65,6 +65,7 @@
   order: 3;
   flex-basis: 100%;
   justify-content: space-between;
+  gap: 12px;
 }
 
 .portrait .stage {
